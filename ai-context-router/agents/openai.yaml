@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Context Router"
+  short_description: "统一 agent/gemini/claude 上下文到 ai-context.md"
+  default_prompt: "当用户提到修改 agents.md、gemini.md、claude.md 或执行 /init 时，先改 ai-context.md 并同步链接文件。"

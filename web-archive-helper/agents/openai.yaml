@@ -1,0 +1,4 @@
+interface:
+  display_name: "网页归档助手"
+  short_description: "保存 URL 并支持稍后按链接回读"
+  default_prompt: "保存 https://example.com/article"
