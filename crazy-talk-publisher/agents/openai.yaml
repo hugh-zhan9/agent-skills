@@ -1,0 +1,4 @@
+interface:
+  display_name: "疯言疯语发布"
+  short_description: "快速记录疯言疯语并自动创建提交后推送到博客仓库当前分支"
+  default_prompt: "Use $crazy-talk-publisher to publish a 疯言疯语 entry into todays note and push it."
