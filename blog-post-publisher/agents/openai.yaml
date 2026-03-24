@@ -1,0 +1,4 @@
+interface:
+  display_name: "博客发布助手"
+  short_description: "从Obsidian收件箱或直接文本快速发布博客并提交推送"
+  default_prompt: "Use $blog-post-publisher to publish a post into content/posts with commit and push."
