@@ -126,7 +126,7 @@ tags: [疯言疯语]
 """,
             )
 
-    def test_append_entry_with_two_blank_lines_between_blocks(self):
+    def test_insert_new_entry_above_existing_entries(self):
         module = load_module()
 
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -165,14 +165,68 @@ description: "疯言疯语。"
 tags: [疯言疯语]
 ---
 
+### 14:08
+
+第二条
+
+
 ### 10:32
 
 第一条
+""",
+            )
+
+    def test_insert_new_entry_after_preamble_and_before_existing_entries(self):
+        module = load_module()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo = Path(tmpdir)
+            target_dir = repo / "content" / "crazy-talk"
+            target_dir.mkdir(parents=True)
+            target = target_dir / "2026-03-24.md"
+            target.write_text(
+                """---
+title: "2026-03-24"
+draft: false
+date: 2026-03-24T00:00:00+08:00
+description: "疯言疯语。"
+tags: [疯言疯语]
+---
+
+- 前言
+
+
+### 10:32
+
+第一条
+""",
+                encoding="utf-8",
+            )
+
+            now = datetime.fromisoformat("2026-03-24T14:08:00+08:00")
+            module.upsert_crazy_talk(repo, "第二条", now)
+
+            self.assertEqual(
+                target.read_text(encoding="utf-8"),
+                """---
+title: "2026-03-24"
+draft: false
+date: 2026-03-24T00:00:00+08:00
+description: "疯言疯语。"
+tags: [疯言疯语]
+---
+
+- 前言
 
 
 ### 14:08
 
 第二条
+
+
+### 10:32
+
+第一条
 """,
             )
 

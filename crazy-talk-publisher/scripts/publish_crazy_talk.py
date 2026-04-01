@@ -175,6 +175,45 @@ def build_commit_message(created: bool, now: datetime) -> str:
     return f"{action} {now:%Y-%m-%d} 疯言疯语"
 
 
+def split_existing_content(existing: str) -> tuple[str, str, str]:
+    if not existing.startswith("---\n"):
+        return "", "", existing.strip("\n")
+
+    closing = existing.find("\n---\n", 4)
+    if closing == -1:
+        return "", "", existing.strip("\n")
+
+    front_matter_end = closing + len("\n---\n")
+    remainder = existing[front_matter_end:]
+    stripped_remainder = remainder.lstrip("\n")
+    leading_newlines = len(remainder) - len(stripped_remainder)
+    body_start = front_matter_end + leading_newlines
+
+    marker = "\n### "
+    first_entry = stripped_remainder.find("### ")
+    if first_entry == -1:
+        return existing[:body_start], stripped_remainder.strip("\n"), ""
+
+    if first_entry != 0:
+        first_entry = stripped_remainder.find(marker)
+        if first_entry == -1:
+            return existing[:body_start], stripped_remainder.strip("\n"), ""
+        first_entry += 1
+
+    body_index = body_start + first_entry
+    preamble = existing[body_start:body_index].strip("\n")
+    entries = existing[body_index:].strip("\n")
+    return existing[:body_start], preamble, entries
+
+
+def compose_existing_content(header: str, preamble: str, entries: list[str]) -> str:
+    text = header.rstrip("\n") + "\n\n"
+    if preamble:
+        text += preamble.strip("\n") + "\n\n\n"
+    text += "\n\n\n".join(entry.strip("\n") for entry in entries if entry.strip()) + "\n"
+    return text
+
+
 def upsert_crazy_talk(repo_path: Path, content: str, now: datetime) -> PublishResult:
     repo_path = repo_path.expanduser().resolve()
     target = target_file_path(repo_path, now)
@@ -186,8 +225,12 @@ def upsert_crazy_talk(repo_path: Path, content: str, now: datetime) -> PublishRe
     if created:
         target.write_text(build_front_matter(now) + entry, encoding="utf-8")
     else:
-        existing = target.read_text(encoding="utf-8").rstrip("\n")
-        target.write_text(f"{existing}\n\n\n{entry}", encoding="utf-8")
+        existing = target.read_text(encoding="utf-8")
+        header, preamble, entries = split_existing_content(existing)
+        entry_blocks = [entry.rstrip("\n")]
+        if entries:
+            entry_blocks.append(entries)
+        target.write_text(compose_existing_content(header, preamble, entry_blocks), encoding="utf-8")
 
     return PublishResult(
         created=created,
