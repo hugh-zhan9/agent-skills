@@ -372,6 +372,14 @@ Kratos 推荐使用 buf 而非原生 protoc：
 
 ---
 
+## Database DDL
+
+- MySQL `CREATE TABLE` statements must include a table-level `COMMENT`.
+- MySQL column definitions in `CREATE TABLE` or `ALTER TABLE ... ADD COLUMN` statements must include column-level `COMMENT`.
+- When using Ent schema for MySQL tables, add `.Comment(...)` to fields that are persisted as columns.
+
+---
+
 ## 错误处理与边界条件
 
 ### 常见错误场景
