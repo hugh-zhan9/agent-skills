@@ -1,0 +1,6 @@
+interface:
+  display_name: "DDIA Review"
+  short_description: "Review data-intensive systems with DDIA reasoning"
+  default_prompt: "Use $ddia-review to review this data-intensive system and prioritize correctness and launch risks."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Service Reliability Review"
+  short_description: "Review resilience, overload controls, and observability together"
+  default_prompt: "Review this service's timeouts, retries, circuit breakers, isolation, degradation, rate limiting, logs, traces, and metrics as one reliability system. Identify cascading-failure risks, telemetry gaps, and the tests needed to prove recovery."
